@@ -1,18 +1,14 @@
-[![build status](https://secure.travis-ci.org/pirati-cz/js-democracy-server.png?branch=master)](https://secure.travis-ci.org/vencax/js-democracy-server)
+# node-smtp-hooker
 
-# JS-democracy server
+SMTP server for incomming mails.
+According recipient address it runs a hook:
 
-Software for performing democratic agendas such as voting.
-This is a pilot version for purposes of [pirate party-cz](http://pirati.cz).
-Communication through REST API.
+- REDIR hook - it resend the mail into another address. Useful if you have no mail hosting and want to receive mails on your domain.
+- POST hook - it parses the mail and create HTML POST request with parsed content
 
-Written in [coffeescript](http://coffeescript.org/), uses latest and greatest libraries, such as:
-- [express](http://expressjs.com/)
-- [grunt](http://gruntjs.com/)
-- [mocha](http://visionmedia.github.io/mocha/)
+## configuration
 
-supports for CORS requests and other features are on it way.
-
+Done with JSON config file. Sample config file:
 '''
 {
     "node.ee": {
@@ -24,7 +20,6 @@ supports for CORS requests and other features are on it way.
     }
 }
 '''
+Filename configurable through CFGFILE environment variable or defaults to config.json.
 
-If you want to give a feedback, please [raise an issue](https://github.com/vencax/js-democracy-server/issues).
-
-
+If you want to give a feedback, please [raise an issue](https://github.com/vencax/node-smtp-hooker/issues).
