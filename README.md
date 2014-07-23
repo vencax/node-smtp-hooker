@@ -9,17 +9,17 @@ According recipient address it runs a hook:
 ## configuration
 
 Done with JSON config file. Sample config file:
-'''
-{
-    "node.ee": {
-        "info": "vencax77@gmail.com",
-        "credit": "http://localhost:5004/credithandler"
-    },
-    "neti.ee": {
-        "credit": "http://neti.ee/credithandler"
+
+    {
+        "node.ee": {
+            "info": "vencax77@gmail.com",
+            "credit": "http://localhost:5004/credithandler"
+        },
+        "neti.ee": {
+            "credit": "http://neti.ee/credithandler"
+        }
     }
-}
-'''
+
 Filename configurable through CFGFILE environment variable or defaults to config.json.
 
 If you want to give a feedback, please [raise an issue](https://github.com/vencax/node-smtp-hooker/issues).
