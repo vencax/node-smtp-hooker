@@ -27,4 +27,6 @@ Filename configurable through CFGFILE environment variable or defaults to config
 By default it runs on 8025 but the port can be overriden by PORT env. var. as usual.
 However running on nonproviledged ports is safer but needs port redirection 25 -> 8025 (FW script included).
 
+Useful when run as service (init script included) with [forever](https://github.com/nodejitsu/forever).
+
 If you want to give a feedback, please [raise an issue](https://github.com/vencax/node-smtp-hooker/issues).
