@@ -8,6 +8,13 @@ According recipient address it runs a hook:
 - POST hook - it parses the mail and create HTML POST request with parsed content.
     Simply it is a SMTP to HTTP convertor.
 
+## installation
+
+    npm install git://github.com/vencax/node-smtp-hooker.git -g
+    chmod a+x $NODE_PATH/node-smtp-hooker/misc/initscript.sh
+    ln -s $NODE_PATH/node-smtp-hooker/misc/initscript.sh /etc/init.d/node-smtp-hooker
+    npm install forever -g
+
 ## configuration
 
 Done with JSON config file. Sample config file:
