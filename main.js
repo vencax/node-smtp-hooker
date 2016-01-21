@@ -1,12 +1,12 @@
+require('coffee-script/register');
 
-var server = require('./lib/server');
 var port = process.env.PORT || 8025;
+var host = process.env.HOST || 'localhost';
+var server = require('./lib/server');
 
-
-server.listen(port, 'localhost', function(err) {
-    if(err) {
-        console.log(err);
-    } else {
-        console.log('listening on ' + port);
-    }
+server.listen(port, host, function(err) {
+  if(err) {
+      return console.log(err);
+  }
+  console.log('stalking britney spears on ' + host + ':' + port);
 });

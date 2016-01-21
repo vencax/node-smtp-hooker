@@ -10,7 +10,7 @@
     "mailparser": "^0.4.4",
     "nodemailer": "~0.7",
     "request": "^2.38.0",
-    "simplesmtp": "~0.3"
+    "smtp-connection": "^2.0.1"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
