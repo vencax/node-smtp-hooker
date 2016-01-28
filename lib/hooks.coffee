@@ -16,13 +16,13 @@ module.exports.forward = (connection, forward_dest, done) ->
     # Client is ready to take message content, run done handler
     done()
 
-  'open': ->
+  'open': () ->
     # nothing
     connection.data = ''
     return
   'write': (data) ->
     connection.data += data
-  'end': ->
+  'end': () ->
     # Client is ready to init message
     connection.client.send
       from: connection.from
@@ -56,11 +56,10 @@ _putData = (url, data) ->
     timeout: 1000
   data.attachments.map (a) ->
     opts.form[a.contentId] = a.content
-    return
+
   request.post opts, (err, httpResponse, body) ->
-    if err
-      return console.error('upload failed:', err)
+    return console.error('upload failed:', err) if err
+
     console.log 'Upload successful!  Server responded with:', body
-    return
-  ).on 'error', (err) ->
+  .on 'error', (err) ->
     console.error 'upload failed:', err
