@@ -11,19 +11,22 @@ exports.forward = (forward_dest, stream, session, cb) ->
   client = new SMTPConnection
     port: OUT_SMTP_PORT
     host: OUT_SMTP_HOST
+    ignoreTLS: true
     connectionTimeout: 2000
     greetingTimeout: 2000
-    debug: true
   client.on 'error', (err)->
     winston.error(err)
-    cb(err)
+    cb(new Error(err))
   client.on 'end', () ->
-    winston.info('forwarded to ' + forward_dest)
     client.quit();
 
   client.connect () ->
-    client.send {from: connection.from, to: [ forward_dest ]}, stream, (err, stat)->
+    opts =
+      from: session.envelope.mailFrom.address
+      to: [ forward_dest ]
+    client.send opts, stream, (err, stat)->
       cb(err) if err
+      winston.info('forwarded to ' + forward_dest)
       cb()
 
 

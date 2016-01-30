@@ -1,7 +1,9 @@
 SMTPServer = require('smtp-server').SMTPServer
 winston = require('winston')
+async = require('async')
 config = require('./config')
 handlers = require('./hooks')
+
 
 module.exports = smtp = new SMTPServer
   disabledCommands: ['AUTH']
@@ -27,11 +29,14 @@ module.exports = smtp = new SMTPServer
       callback(new Error('Invalid domain'))
 
   onData: (stream, session, callback) ->
-    for i in session.hooks
+    async.map session.hooks, (i, cb) ->
       if i.indexOf('@') > 0
-        handlers.forward(i, stream, session, callback)
+        handlers.forward(i, stream, session, cb)
       else
-        handlers.post2url(i, stream, session, callback)
+        handlers.post2url(i, stream, session, cb)
+    , (err, allresults) ->
+      return callback(new Error(err)) if err
+      callback()
 
 
 smtp.on 'error', (err) ->

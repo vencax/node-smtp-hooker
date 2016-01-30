@@ -5,7 +5,7 @@ module.exports = (g)->
 
   smtp = new SMTPServer
     disabledCommands: ['AUTH']
-    logger: true
+    logger: process.env.DEBUG_SMTP_LOGGING || false
 
     onConnect: (session, callback) ->
       callback()
@@ -17,8 +17,10 @@ module.exports = (g)->
       callback()
 
     onData: (stream, session, callback) ->
-      g.incomingMail = session
-      stream.pipe(process.stdout)
-      stream.on('end', callback)
+      g.incomingMails.push session
+      session.data = ""
+      stream.on 'data', (data)->
+        session.data += data
+      stream.on 'end', callback
 
   return smtp

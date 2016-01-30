@@ -25,8 +25,7 @@ g =
     console.log res.body
     res.statusCode.should.eql desiredStatus
   port: port
-  storagePORT: port + 1
-  sentemails: []
+  incomingMails: []
 
 sendMail = (mail, cb) ->
   g.sentemails.push mail
@@ -71,5 +70,18 @@ describe "app", ->
     g.childEnv.env.TEST_SMTP_TO_ADDR = '["info@node.ee"]'
     child = exec cmd, g.childEnv, (err, stdout, stderr) ->
       return done(err) if err
-      console.log g.incomingMail
+      g.incomingMails.length.should.eql 1
+      g.incomingMails[0].envelope.mailFrom.address.should.eql 'vencax@vxk.cz'
+      g.incomingMails[0].envelope.rcptTo[0].address.should.eql 'vencax77@gmail.com'
+      done()
+
+  it "shall forward and post", (done) ->
+    g.incomingMails = []
+    delete g.redirbody
+    cmd = "python #{__dirname}/send.py"
+    g.childEnv.env.TEST_SMTP_TO_ADDR = '["info@node.ee","credit@node.ee"]'
+    child = exec cmd, g.childEnv, (err, stdout, stderr) ->
+      return done(err) if err
+      g.incomingMails.length.should.eql 1
+      g.redirbody.text.should.eql text
       done()
