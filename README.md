@@ -1,9 +1,12 @@
 # node-smtp-hooker
 
+[![build status](https://api.travis-ci.org/vencax/node-smtp-hooker.svg)](https://travis-ci.org/vencax/node-smtp-hooker)
+
+
 SMTP server for incomming mails.
 According recipient address it runs a hook:
 
-- REDIR hook - it resend the mail into another address. 
+- REDIR hook - it resend the mail into another address.
     Useful if you have no mail hosting and want to receive mails on your (naked) domain.
 - POST hook - it parses the mail and create HTML POST request with parsed content.
     Simply it is a SMTP to HTTP convertor.
