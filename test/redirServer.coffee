@@ -7,4 +7,5 @@ module.exports = (g)->
   app.use(require('body-parser').json())
 
   app.use (req, res) ->
-    console.log req.body
+    g.redirbody = req.body
+    res.json('ok')

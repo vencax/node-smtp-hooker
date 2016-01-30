@@ -8,9 +8,10 @@
   },
   "dependencies": {
     "mailparser": "^0.4.4",
-    "nodemailer": "~0.7",
     "request": "^2.38.0",
-    "smtp-connection": "^2.0.1"
+    "smtp-connection": "^2.0.1",
+    "smtp-server": "^1.8.0",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "body-parser": "^1.14.1",

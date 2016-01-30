@@ -1,41 +1,38 @@
-simplesmtp = require('simplesmtp')
+SMTPServer = require('smtp-server').SMTPServer
+winston = require('winston')
 config = require('./config')
 handlers = require('./hooks')
 
-module.exports = smtp = simplesmtp.createServer()
+module.exports = smtp = new SMTPServer
+  disabledCommands: ['AUTH']
   # disableDNSValidation: true
 
-# Set up recipient validation function
-smtp.on 'validateRecipient', (connection, email, done) ->
-  parts = (email or '').split('@')
-  domain = parts[1].toLowerCase().trim()
-  user = parts[0].toLowerCase().trim()
-  if domain of config
-    hooks = config[domain]
-    if user of hooks
-      if hooks[user].indexOf('@') > 0
-        connection.hooks.push handlers.forward(connection, hooks[user], done)
+  onMailFrom: (address, session, callback) ->
+    # performed only once, so init the hooks
+    session.hooks = []
+    callback()
+
+  onRcptTo: (address, session, callback) ->
+    parts = (address.address or '').split('@')
+    domain = parts[1].toLowerCase().trim()
+    user = parts[0].toLowerCase().trim()
+    if domain of config
+      hooks = config[domain]
+      if user of hooks
+        session.hooks.push(hooks[user])
+        callback()
       else
-        connection.hooks.push handlers.post2url(connection, hooks[user], done)
+        return callback(new Error('Invalid user'))
     else
-      return done(new Error('Invalid user'))
-  else
-    done new Error('Invalid domain')
+      callback(new Error('Invalid domain'))
 
-smtp.on 'validateSender', (connection, email, done) ->
-  # performed only once, so init the hooks
-  connection.hooks = []
-  done()
+  onData: (stream, session, callback) ->
+    for i in session.hooks
+      if i.indexOf('@') > 0
+        handlers.forward(i, stream, session, callback)
+      else
+        handlers.post2url(i, stream, session, callback)
 
-smtp.on 'startData', (connection) ->
-  for i in connection.hooks
-    i.open()
 
-smtp.on 'data', (connection, chunk) ->
-  for i in connection.hooks
-    i.write(chunk)
-
-smtp.on 'dataReady', (connection, done) ->
-  for i in connection.hooks
-    i.end()
-  done()
+smtp.on 'error', (err) ->
+  winston.error('MainError: %s', err.message)

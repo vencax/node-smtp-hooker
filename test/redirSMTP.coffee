@@ -1,23 +1,24 @@
 
-simplesmtp = require('simplesmtp')
+SMTPServer = require('smtp-server').SMTPServer
 
 module.exports = (g)->
 
-  smtp = simplesmtp.createServer()
+  smtp = new SMTPServer
+    disabledCommands: ['AUTH']
+    logger: true
 
-  # Set up recipient validation function
-  smtp.on 'validateRecipient', (connection, email, done) ->
-    console.log "RECEIVING: #{email}"
-    done()
+    onConnect: (session, callback) ->
+      callback()
 
-  smtp.on 'validateSender', (connection, email, done) ->
-    console.log "TO: #{email}"
-    done()
+    onMailFrom: (address, session, callback) ->
+      callback()
 
-  smtp.on 'data', (connection, chunk) ->
-    console.log chunk
+    onRcptTo: (address, session, callback) ->
+      callback()
 
-  smtp.on 'dataReady', (connection, done) ->
-    done()
+    onData: (stream, session, callback) ->
+      g.incomingMail = session
+      stream.pipe(process.stdout)
+      stream.on('end', callback)
 
   return smtp
